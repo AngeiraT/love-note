@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love Note 💛</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+  body {
+    background-color: #f9f5ee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-family: 'Shadows Into Light', cursive;
+    margin: 0;
+    overflow: hidden;
+  }
+  .container {
+    text-align: center;
+  }
+  .note {
+    background: #f3e2c7;
+    border: 2px solid #b89b75;
+    width: 320px;
+    min-height: 280px;
+    margin: 20px auto;
+    padding: 20px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
+    transform: rotate(-1.5deg);
+    opacity: 0;
+    animation: fadeIn 2s ease forwards;
+  }
+  h1 {
+    color: #6b4e2e;
+  }
+  p {
+    font-size: 1.2em;
+    color: #5b3d22;
+    white-space: pre-wrap;
+  }
+  button {
+    background-color: #6b4e2e;
+    color: #fff;
+    font-size: 1em;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-family: 'Shadows Into Light', cursive;
+  }
+  button:hover {
+    background-color: #8a6440;
+  }
+
+  /* Floating hearts */
+  .heart {
+    position: fixed;
+    bottom: 0;
+    color: #e58c8a;
+    font-size: 1.5rem;
+    opacity: 0.8;
+    animation: floatUp 4s ease-in-out forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px);}
+    to { opacity: 1; transform: translateY(0);}
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-120vh) scale(1.8); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <button id="revealBtn">See today's note ❤️</button>
+    <div id="note" class="note" style="display:none;">
+      <h1>💛 My Love 💛</h1>
+      <p id="message">Loading your note...</p>
+    </div>
+  </div>
+
+  <script>
+    async function fetchNote() {
+      try {
+        const res = await fetch('notes.json');
+        const data = await res.json();
+        const today = new Date().toISOString().split('T')[0];
+        return data[today] || data['default'];
+      } catch {
+        return 'Could not load your note right now 💛';
+      }
+    }
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.textContent = '💖';
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = 3 + Math.random() * 2 + 's';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+
+    document.getElementById('revealBtn').addEventListener('click', async function() {
+      this.style.display = 'none';
+      const note = document.getElementById('note');
+      const msg = document.getElementById('message');
+      note.style.display = 'block';
+      msg.textContent = await fetchNote();
+
+      // Launch floating hearts
+      for (let i = 0; i < 8; i++) {
+        setTimeout(createHeart, i * 400);
+      }
+    });
+  </script>
+</body>
+</html>
+
+
